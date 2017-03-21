@@ -1,0 +1,39 @@
+
+/*
+ * THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE. THIS
+ * CODE AND INFORMATION ARE NOT SUPPORTED BY XEBIALABS.
+ */
+
+plugins {
+  id "com.github.hierynomus.license" version "0.13.1"
+  id "com.xebialabs.xl.docker" version "1.0.0"
+}
+
+version = '2017-03-21'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+xlDocker {
+  compileImage = 'xebialabs/xlr_dev_compile'
+  compileVersion = 'v6.1.0.1'
+  runImage = 'xebialabs/xlr_dev_run'
+  runVersion = 'v6.1.0.1'
+  runPortMapping = '15516:5516'
+}
+
+license {
+  header rootProject.file('License.md')
+  strictCheck false
+  ext.year = Calendar.getInstance().get(Calendar.YEAR)
+  ext.name = 'XEBIALABS'
+}
+
+
+dependencies {
+  compile fileTree(dir: "/Users/bmoussaud/Workspace/xebialabs/poc/bbva/xl-release-6.1.0-server/lib", include: '*.jar')
+}
