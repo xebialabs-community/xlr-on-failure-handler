@@ -144,7 +144,7 @@ public class OnReleaseFailureEventListener {
     public void receiveCisUpdated(CisUpdatedEvent event) {
         for (ConfigurationItem ci : event.getCis()) {
             if (ci.getType().instanceOf(RELEASE_TYPE)) {
-                Release release = (Release) ci;
+                final Release release = (Release) ci;
                 if (release.getStatus() == ReleaseStatus.FAILED) {
                     // see comment where FAILED_RELEASES_SEEN is declared
                     if (FAILED_RELEASES_SEEN.getIfPresent(release.getId()) != null) {
