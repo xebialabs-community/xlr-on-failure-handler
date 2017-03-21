@@ -48,11 +48,8 @@ def add_placeholder_task(release, assignedUser):
                     placeholderTask.setTitle('Skip to Fallback')
                     placeholderTask.setDescription('Automatically added by onFailure handler')
                     placeholderTask.setOwner(assignedUser)
-                    if i < numTasks-1:
-                        savedPlaceholderTask = phaseApi.addTask(phase.getId(), placeholderTask, i+1)
-                    else:
-                        # add at the end of the phase
-                        savedPlaceholderTask = phaseApi.addTask(phase.getId(), placeholderTask)
+                    savedPlaceholderTask = phaseApi.addTask(phase.getId(), placeholderTask, i+1)
+
     return savedPlaceholderTask.getId()
 
 def skip_task(taskId, assignedUser, comment):
