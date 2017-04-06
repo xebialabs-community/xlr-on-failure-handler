@@ -11,8 +11,8 @@ plugins {
   id "com.xebialabs.xl.docker" version "1.0.0"
 }
 
-version = '2017-04-01-SNAPSHOT'
-def apiVersion = '2016.2.2'
+version = '1.0.0'
+def apiVersion = '2017.1.0'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -31,18 +31,19 @@ repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    url 'https://dist.xebialabs.com/public/maven2'
+    credentials {
+      username 'community-plugins'
+      password 'community'
+    }
+    url 'http://nexus.xebialabs.com/nexus/content/repositories/releases'
   }
-  maven {
-    url 'http://www.knopflerfish.org/maven2'
-  }
-
 }
 
 dependencies {
   compile "com.xebialabs.deployit:engine-spi:$apiVersion"
   compile group: 'nl.javadude.t2bus', name: 't2-bus', version: '1.2.1'
   compile 'com.google.guava:guava:18.0'
+  compile group: "com.xebialabs.xl-platform", name: "xl-repository-api", version: "$apiVersion", transitive: false
   compile fileTree(dir: "libs", include: '*.jar')
 }
 
