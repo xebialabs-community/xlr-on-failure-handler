@@ -11,16 +11,12 @@ https://docs.xebialabs.com/xl-release/how-to/implement-a-custom-failure-handler.
 [![Github All Releases][xlr-on-failure-handler-plugin-downloads-image] ]()
 
 
-[xlr-on-failure-handler-plugin-travis-image]: https://travis-ci.org/xebialabs-community/xlr-on-failure-handler-plugin.svg?bran
-ch=master
+[xlr-on-failure-handler-plugin-travis-image]: https://travis-ci.org/xebialabs-community/xlr-on-failure-handler-plugin.svg?branch=master
 [xlr-on-failure-handler-plugin-travis-url]: https://travis-ci.org/xebialabs-community/xlr-on-failure-handler-plugin
 [xlr-on-failure-handler-plugin-codacy-image]: https://api.codacy.com/project/badge/Grade/57314806d4eb4f6a855707edc6c8ef75
-8c26f
 [xlr-on-failure-handler-plugin-codacy-url]: https://www.codacy.com/app/joris-dewinne/xlr-on-failure-handler-plugin
-[xlr-on-failure-handler-plugin-code-climate-image]: https://codeclimate.com/github/xebialabs-community/xlr-on-failure-handler-
-plugin/badges/gpa.svg
-[xlr-on-failure-handler-plugin-code-climate-url]: https://codeclimate.com/github/xebialabs-community/xlr-on-failure-handler-pl
-ugin
+[xlr-on-failure-handler-plugin-code-climate-image]: https://codeclimate.com/github/xebialabs-community/xlr-on-failure-handler-plugin/badges/gpa.svg
+[xlr-on-failure-handler-plugin-code-climate-url]: https://codeclimate.com/github/xebialabs-community/xlr-on-failure-handler-plugin
 [xlr-on-failure-handler-plugin-license-image]: https://img.shields.io/badge/License-MIT-yellow.svg
 [xlr-on-failure-handler-plugin-license-url]: https://opensource.org/licenses/MIT
 [xlr-on-failure-handler-plugin-downloads-image]: https://img.shields.io/github/downloads/xebialabs-community/xlr-on-failure-handler-plugin/total.svg
