@@ -122,6 +122,6 @@ else:
         logger.debug('Skipping placeholder task')
         skip_task(placeholderTaskId, onFailureUsername, skipComment)
 
-        responseMsg = "Successfully executed onFailure handler for release '%s'" % (releaseId)'
+        responseMsg = "Successfully executed onFailure handler for release '%s'" % releaseId
 
 response.entity = { 'message': responseMsg }
