@@ -9,7 +9,7 @@
 #
 
 xlr:
-  image: xebialabs/xlr_dev_run:v6.2.0.1
+  build: ./xlr
   volumes:
     - ~/xl-licenses:/license
     - ./../../../../:/data

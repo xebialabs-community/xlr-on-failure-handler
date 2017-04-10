@@ -22,3 +22,36 @@ wget --http-user=admin --http-password=admin --auth-no-challenge \
      --post-file=$SCRIPTPATH/data/sample-template.json \
      http://localhost:5516/api/v1/templates/import -O /dev/null
 
+wget --http-user=admin --http-password=admin --auth-no-challenge \
+     --header="Accept: application/json" \
+     --header="Content-type: application/json" \
+     --post-data='{"username":"onFailure_user","email":"","fullName":"","password":"1234abcd","loginAllowed":true}' \
+     http://localhost:5516/users -O /dev/null
+
+########## Role
+
+wget --http-user=admin --http-password=admin --auth-no-challenge \
+     --header="Accept: application/json" \
+     --header="Content-type: application/json" \
+     --method="PUT" \
+     --body-file=$SCRIPTPATH/data/roles.json \
+     http://localhost:5516/roles/principals -O /dev/null
+
+########## Permissions
+
+wget --http-user=admin --http-password=admin --auth-no-challenge \
+     --header="Accept: application/json" \
+     --header="Content-type: application/json" \
+     --method="PUT" \
+     --body-file=$SCRIPTPATH/data/permissions.json \
+     http://localhost:5516/roles/permissions/global -O /dev/null
+
+####### Global variable
+
+wget --http-user=admin --http-password=admin --auth-no-challenge \
+     --header="Accept: application/json" \
+     --header="Content-type: application/json" \
+     --post-file=$SCRIPTPATH/data/global.json \
+     http://localhost:5516/api/v1/config/Configuration/variables/global -O /dev/null
+
+

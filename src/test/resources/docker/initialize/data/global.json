@@ -1,0 +1,7 @@
+{
+    "key": "global.onFailureHandlerPath",
+    "type": "xlrelease.StringVariable",
+    "requiresValue": false,
+    "showOnReleaseStart": false,
+    "value": "/api/extension/on-failure"
+}

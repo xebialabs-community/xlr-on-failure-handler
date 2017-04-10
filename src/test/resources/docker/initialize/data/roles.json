@@ -1,0 +1,13 @@
+[
+    {
+        "role": {
+            "name": "onFailure_handler"
+        },
+        "principals": [
+            {
+                "username": "onFailure_user",
+                "fullName": ""
+            }
+        ]
+    }
+]

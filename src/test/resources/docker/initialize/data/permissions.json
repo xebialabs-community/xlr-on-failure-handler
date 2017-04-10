@@ -1,0 +1,11 @@
+[
+    {
+        "role": {
+            "id": 0,
+            "name": "onFailure_handler"
+        },
+        "permissions": [
+            "admin"
+        ]
+    }
+]
