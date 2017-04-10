@@ -4,7 +4,7 @@ deploy:
   provider: releases
   api_key:
     secure: fPYDx0hvfcHfJ+t0/WM2nDNzVs1ftBRvge5V/mytDWsvTX/V8vbqFF/sPzIz24P9BVAZWL0dbY12oZJLxsLNU/WBJYUEZMCYPH+u0+Vc4T9u0CyIapSuWSIIgVP9+CuiuaaX+E+gVJO+O8QAsPCKW3tK7avAFyAmPzYmbnA3+OhE8q5abRN7qpIR8Cvcx8IfrlC9p0Xavr8cYXO4zKWIORBV2tLPKBP+jifbs98cnbbGXENMG3a1zJPR/EnJHkhlt0CajJJbSISBUu/EMHKZueXrpYhq8edNNaWrz7OSuHYg86ZVpAjDvaWnSNkDJHp20F2M7388eTnvgtAtBeyozJvzFQBHHt0FDcK38tmJTfONjZAfMLGUSuTaw/d99Tyqp4CYt92mCRKyZXue+SQl4YruGz40MrjGOYAnun4LtriZ2G7QM8FUYEv6wfpGbZH7657VSN/u0y9QS9W7f4qNrCl96Gm5MzVpjBRGRbN0T89XOgeYoLpWRL17z+Vfkut9P19soIafOVozYYyYqFShXy+CDAWZ3DHBAMvmCqYYxm93NXSIM8M9C2uU/IRyIh7PyY5QVFwUTkQ/DhuH0YEM+ImXD+kPBW4ubiWKPRwvmlVnYxdLjrXmU6RgUIesbsjlLkpYvu/PvgRrbxHiX8gDDi49OiAO7k22kXU8akrSkcg=
-  file: build/libs/xlr-on-failure-handler-2017-03-21.jar
+  file: build/libs/xlr-on-failure-handler-plugin-1.0.0.jar
   skip_cleanup: true
   on:
     all_branches: true
