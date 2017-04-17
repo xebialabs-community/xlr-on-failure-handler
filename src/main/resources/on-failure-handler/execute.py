@@ -73,11 +73,18 @@ def new_variable(name, value, type, required=False, label=None, description=None
         variable.setDescription(description)
     return variable
 
+def get_task_url(task):
+    return "%s#/tasks/%s?showDetails=true" % (
+        ServerConfiguration.getInstance().getServerUrl(),
+        task.getId().replace("Applications/", "").replace("/", "-"))
+
 
 def create_release_failed_task_variables(task):
     if RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME in release.getVariablesByKeys():
         logger.debug('Variable "{}" already present. Doing nothing', RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME)
-        return
+        var = release.getVariablesByKeys()[RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME]
+        var.value = task.getTitle()
+        releaseApi.updateVariable(var)
     else:
         logger.debug('Adding "{}" variable', RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME)
         failed_task_title_var = new_variable(RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME, task.getTitle(),
@@ -88,13 +95,13 @@ def create_release_failed_task_variables(task):
 
     if RELEASE_FAILED_TASK_LINK_VARIABLE_NAME in release.getVariablesByKeys():
         logger.debug('Variable "{}" already present. Doing nothing', RELEASE_FAILED_TASK_LINK_VARIABLE_NAME)
-        return
+        var = release.getVariablesByKeys()[RELEASE_FAILED_TASK_LINK_VARIABLE_NAME]
+        var.value = get_task_url(task)
+        releaseApi.updateVariable(var)
     else:
         logger.debug('Adding "{}" variable', RELEASE_FAILED_TASK_LINK_VARIABLE_NAME)
         failed_task_link_var = new_variable(RELEASE_FAILED_TASK_LINK_VARIABLE_NAME,
-                                            "%s#/tasks/%s?showDetails=true" % (
-                                            ServerConfiguration.getInstance().getServerUrl(),
-                                            task.getId().replace("Applications/", "").replace("/", "-")),
+                                            get_task_url(task),
                                             STRING_VARIABLE_TYPE, False, 'Failed Task Link',
                                             'The direct link of the task that caused the failure')
         releaseApi.createVariable(release.getId(), failed_task_link_var)
