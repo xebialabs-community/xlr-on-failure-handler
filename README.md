@@ -24,3 +24,10 @@ https://docs.xebialabs.com/xl-release/how-to/implement-a-custom-failure-handler.
 ## Installation ##
 
 Place the latest released version under the `plugins` dir.
+
+## Customizations ##
+
+The following additional changes have been made compared to the one described in the [documentation](https://docs.xebialabs.com/xl-release/how-to/implement-a-custom-failure-handler.html):
++ Also checking if task is part of an `xlrelease.SequentialGroup`
++ On failure adds a variable with name `releaseFailedTaskTitle` that will contain the title of the failed task.
++ On failure adds a variable with name `releaseFailedTaskLink` that will contain a direct link to the failed task.

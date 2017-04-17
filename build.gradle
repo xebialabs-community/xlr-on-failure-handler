@@ -8,7 +8,7 @@
 
 plugins {
   id "com.github.hierynomus.license" version "0.13.1"
-  id "com.xebialabs.xl.docker" version "1.0.0"
+  id "com.xebialabs.xl.docker" version "1.1.0"
 }
 
 version = '1.0.0'

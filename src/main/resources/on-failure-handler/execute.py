@@ -8,6 +8,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+from com.xebialabs.deployit import ServerConfiguration
 from com.xebialabs.deployit.exception import NotFoundException
 from com.xebialabs.xlrelease.api.v1.forms import Comment, Variable
 from com.xebialabs.xlrelease.domain import Task
@@ -16,10 +17,14 @@ RELEASE_ID_PARAM = 'releaseId'
 ON_FAILURE_USER_PARAM = 'onFailureUser'
 MANUAL_TASK_TYPE = 'xlrelease.Task'
 BOOLEAN_VARIABLE_TYPE = 'xlrelease.BooleanVariable'
-RELEASE_FAILED_VARIABLE_NAME = 'releaseFailed'
+STRING_VARIABLE_TYPE = 'xlrelease.StringVariable'
+RELEASE_FAILED_MARKER_VARIABLE_NAME = 'releaseFailed'
+RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME = 'releaseFailedTaskTitle'
+RELEASE_FAILED_TASK_LINK_VARIABLE_NAME = 'releaseFailedTaskLink'
 ON_FAILURE_PHASE_NAME = 'onFailure'
 IS_ON_FAILURE_PHASE = lambda phase: phase.getTitle() == ON_FAILURE_PHASE_NAME
-IS_PARALLEL_GROUP = lambda task: task.getType() == 'xlrelease.ParallelGroup'
+IS_GROUP = lambda task: task.getType() == 'xlrelease.ParallelGroup' or task.getType == 'xlrelease.SequentialGroup'
+
 
 def has_onFailure_phase(release):
     for phase in release.getPhases():
@@ -27,11 +32,13 @@ def has_onFailure_phase(release):
             return True
     return False
 
+
 def has_failed_phase(release):
     for phase in release.getPhases():
         if phase.isFailed():
             return True
     return False
+
 
 def add_placeholder_task(release, assignedUser):
     for phase in release.getPhases():
@@ -40,29 +47,58 @@ def add_placeholder_task(release, assignedUser):
             numTasks = len(tasks)
             for i in range(numTasks):
                 if tasks[i].isFailed():
-                    logger.trace('Adding manual task in phase {} at position {}', phase.getTitle(), i+1)
+                    logger.trace('Adding manual task in phase {} at position {}', phase.getTitle(), i + 1)
                     placeholderTask = Task.fromType(MANUAL_TASK_TYPE)
                     placeholderTask.setTitle('Skip to Fallback')
                     placeholderTask.setDescription('Automatically added by onFailure handler')
                     placeholderTask.setOwner(assignedUser)
-                    savedPlaceholderTask = phaseApi.addTask(phase.getId(), placeholderTask, i+1)
+                    savedPlaceholderTask = phaseApi.addTask(phase.getId(), placeholderTask, i + 1)
 
     return savedPlaceholderTask.getId()
+
 
 def skip_task(taskId, assignedUser, comment):
     taskApi.assignTask(taskId, assignedUser)
     taskApi.skipTask(taskId, comment)
 
-def new_boolean_var(name, value, required=False, label=None, description=None):
+
+def new_variable(name, value, type, required=False, label=None, description=None):
     # setting a dummy value since we can only pass a string here
     variable = Variable(name, None, required)
-    variable.setType(BOOLEAN_VARIABLE_TYPE)
+    variable.setType(type)
     variable.setValue(value)
     if label:
         variable.setLabel(label)
     if description:
         variable.setDescription(description)
     return variable
+
+
+def create_release_failed_task_variables(task):
+    if RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME in release.getVariablesByKeys():
+        logger.debug('Variable "{}" already present. Doing nothing', RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME)
+        return
+    else:
+        logger.debug('Adding "{}" variable', RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME)
+        failed_task_title_var = new_variable(RELEASE_FAILED_TASK_TITLE_VARIABLE_NAME, task.getTitle(),
+                                             STRING_VARIABLE_TYPE,
+                                             False, 'Failed Task Title',
+                                             'The title of the task that caused the failure')
+        releaseApi.createVariable(release.getId(), failed_task_title_var)
+
+    if RELEASE_FAILED_TASK_LINK_VARIABLE_NAME in release.getVariablesByKeys():
+        logger.debug('Variable "{}" already present. Doing nothing', RELEASE_FAILED_TASK_LINK_VARIABLE_NAME)
+        return
+    else:
+        logger.debug('Adding "{}" variable', RELEASE_FAILED_TASK_LINK_VARIABLE_NAME)
+        failed_task_link_var = new_variable(RELEASE_FAILED_TASK_LINK_VARIABLE_NAME,
+                                            "%s#/tasks/%s?showDetails=true" % (
+                                            ServerConfiguration.getInstance().getServerUrl(),
+                                            task.getId().replace("Applications/", "").replace("/", "-")),
+                                            STRING_VARIABLE_TYPE, False, 'Failed Task Link',
+                                            'The direct link of the task that caused the failure')
+        releaseApi.createVariable(release.getId(), failed_task_link_var)
+
 
 if not RELEASE_ID_PARAM in request.query:
     responseMsg = "Required parameter '%s' missing. Doing nothing" % (RELEASE_ID_PARAM)
@@ -86,18 +122,20 @@ else:
         responseMsg = "Release '%s' not found. Doing nothing" % (releaseId)
     elif not has_onFailure_phase(release):
         logger.debug('No phase {} found. Doing nothing', ON_FAILURE_PHASE_NAME)
-        responseMsg = "onFailure handler does not apply to this release as there is no phase named '%s'. Doing nothing" % (ON_FAILURE_PHASE_NAME)
+        responseMsg = "onFailure handler does not apply to this release as there is no phase named '%s'. Doing nothing" % (
+            ON_FAILURE_PHASE_NAME)
     elif not has_failed_phase(release):
         logger.debug('No failed phase found. Doing nothing')
         responseMsg = 'onFailure handler does not apply to this release as there is no failed phase. Doing nothing'
-    elif RELEASE_FAILED_VARIABLE_NAME in release.getVariablesByKeys():
-        logger.debug('Variable "{}" already present. Doing nothing', RELEASE_FAILED_VARIABLE_NAME)
+    elif RELEASE_FAILED_MARKER_VARIABLE_NAME in release.getVariablesByKeys():
+        logger.debug('Variable "{}" already present. Doing nothing', RELEASE_FAILED_MARKER_VARIABLE_NAME)
         responseMsg = 'onFailure handler already invoked for this release. Doing nothing'
     else:
-        logger.debug('Adding "{}" variable', RELEASE_FAILED_VARIABLE_NAME)
-        releaseFailedVar = new_boolean_var(RELEASE_FAILED_VARIABLE_NAME, True, False, 'Has this release failed?', 'Automatically set by onFailure handler')
+        logger.debug('Adding "{}" variable', RELEASE_FAILED_MARKER_VARIABLE_NAME)
+        releaseFailedVar = new_variable(RELEASE_FAILED_MARKER_VARIABLE_NAME, True, BOOLEAN_VARIABLE_TYPE, False,
+                                        'Has this release failed?', 'Automatically set by onFailure handler')
         releaseApi.createVariable(release.getId(), releaseFailedVar)
-        
+
         # add a manual placeholder task immediately after the first failure
         # so we can activate the release again
         logger.debug('Adding placeholder task')
@@ -105,23 +143,27 @@ else:
 
         logger.debug('Skipping failed tasks')
         skipComment = Comment('Skipped by onFailure handler')
+        failed_task = None
         for task in release.getAllTasks():
-            if task.isFailed() and not IS_PARALLEL_GROUP(task):
+            if task.isFailed() and not IS_GROUP(task):
                 logger.trace('Skipping failed task {}', task.getId())
+                failed_task = task
                 taskApi.skipTask(task.getId(), skipComment)
+        create_release_failed_task_variables(failed_task)
 
         logger.debug('Skipping planned tasks')
         for phase in release.getPhases():
             if not IS_ON_FAILURE_PHASE(phase):
                 for task in phase.getAllTasks():
                     # leave the placeholder task running
-                    if (task.isPlanned() or task.isInProgress()) and not IS_PARALLEL_GROUP(task) and task.getId() != placeholderTaskId:
+                    if (task.isPlanned() or task.isInProgress()) and not IS_GROUP(
+                        task) and task.getId() != placeholderTaskId:
                         logger.trace('Skipping planned or in progress task {}', task.getId())
                         skip_task(task.getId(), onFailureUsername, skipComment)
-        
+
         logger.debug('Skipping placeholder task')
         skip_task(placeholderTaskId, onFailureUsername, skipComment)
 
         responseMsg = "Successfully executed onFailure handler for release '%s'" % releaseId
 
-response.entity = { 'message': responseMsg }
+response.entity = {'message': responseMsg}
