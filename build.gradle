@@ -25,6 +25,7 @@ repositories {
   maven {
     url 'https://dist.xebialabs.com/public/maven2'
   }
+}
 
 dependencies {
   compile "com.xebialabs.deployit:engine-spi:$apiVersion"
@@ -41,4 +42,3 @@ license {
   ext.year = Calendar.getInstance().get(Calendar.YEAR)
   ext.name = 'XEBIALABS'
 }
-
