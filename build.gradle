@@ -1,18 +1,10 @@
-
-/*
- * THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
- * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE. THIS
- * CODE AND INFORMATION ARE NOT SUPPORTED BY XEBIALABS.
- */
-
 plugins {
-  id "com.github.hierynomus.license" version "0.13.1"
+  id "com.github.hierynomus.license" version "0.14.0"
   id "com.xebialabs.xl.docker" version "1.1.0"
 }
 
 version = '1.1.1'
-def apiVersion = '2017.1.0'
+def apiVersion = '2017.4.0'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -21,9 +13,9 @@ apply plugin: 'maven'
 
 xlDocker {
   compileImage = 'xebialabs/xlr_dev_compile'
-  compileVersion = 'v6.2.0.1'
+  compileVersion = 'v7.0.1.1'
   runImage = 'xebialabs/xlr_dev_run'
-  runVersion = 'v6.2.0.1'
+  runVersion = 'v7.0.1.1'
   runPortMapping = '15516:5516'
 }
 
@@ -31,20 +23,15 @@ repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    credentials {
-      username 'community-plugins'
-      password 'community'
-    }
-    url 'http://nexus.xebialabs.com/nexus/content/repositories/releases'
+    url 'https://dist.xebialabs.com/public/maven2'
   }
-}
 
 dependencies {
   compile "com.xebialabs.deployit:engine-spi:$apiVersion"
   compile group: 'nl.javadude.t2bus', name: 't2-bus', version: '1.2.1'
   compile 'com.google.guava:guava:18.0'
   compile group: "com.xebialabs.xl-platform", name: "xl-repository-api", version: "$apiVersion", transitive: false
-  compile fileTree(dir: "libs", include: '*.jar')
+  compile files("$xlReleaseHome/lib/appserver-core-$apiVersion.jar", "$xlReleaseHome/lib/xlr-domain-7.0.1.jar", "$xlReleaseHome/lib/xlr-server-7.0.1.jar")
 }
 
 license {

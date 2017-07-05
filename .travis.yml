@@ -1,5 +1,9 @@
+sudo: required
 language: java
-sudo: false
+install: true
+script: "./gradlew compileDocker"
+services:
+- docker
 deploy:
   provider: releases
   api_key:
