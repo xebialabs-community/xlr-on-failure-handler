@@ -32,7 +32,7 @@ dependencies {
   compile group: 'nl.javadude.t2bus', name: 't2-bus', version: '1.2.1'
   compile 'com.google.guava:guava:18.0'
   compile group: "com.xebialabs.xl-platform", name: "xl-repository-api", version: "$apiVersion", transitive: false
-  compile files("$xlReleaseHome/lib/appserver-core-$apiVersion\\.jar", "$xlReleaseHome/lib/xlr-domain-7.0.1.jar", "$xlReleaseHome/lib/xlr-server-7.0.1.jar")
+  compile files("$xlReleaseHome/lib/appserver-core-${apiVersion}.jar", "$xlReleaseHome/lib/xlr-domain-7.0.1.jar", "$xlReleaseHome/lib/xlr-server-7.0.1.jar")
 }
 
 license {
